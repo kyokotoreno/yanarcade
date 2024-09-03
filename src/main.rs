@@ -15,7 +15,7 @@ fn setup(
         SpriteBundle {
             texture: asset_server.load("textures/floor0.png"),
             transform: Transform {
-                scale: Vec3::new(100.0, 100.0, 0.0),
+                scale: Vec3::new(100.0, 100.0, -1.0),
                 ..default()
             },
             ..default()
@@ -64,6 +64,34 @@ fn update(
     }
 }
 
+fn update_hud(
+    mut player_query: Query<&mut Transform, With<Player>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut spawn_npc_event: EventWriter<npc::SpawnNpcEvent>
+) {
+    let player_transform = player_query.single_mut();
+
+    for keycode in keyboard_input.get_pressed() {
+        match keycode {
+            KeyCode::KeyN => {
+                let npc_transform = Transform {
+                    translation: Vec3::new(
+                        player_transform.translation.x,
+                        player_transform.translation.y,
+                        1.0
+                    ),
+                    ..default()
+                };
+
+                spawn_npc_event.send(npc::SpawnNpcEvent {
+                    transform: npc_transform
+                });
+            },
+            _ => {}
+        }
+    }
+}
+
 fn spawn_npc_test (mut event: EventWriter<npc::SpawnNpcEvent>) {
     event.send(npc::SpawnNpcEvent {
         transform: Transform {
@@ -80,8 +108,8 @@ fn main() {
         )
         .add_event::<npc::SpawnNpcEvent>()
         .add_systems(Startup, setup)
-        .add_systems(PostStartup, spawn_npc_test)
-        .add_systems(Update, update)
+        // .add_systems(PostStartup, spawn_npc_test)
+        .add_systems(Update, (update, update_hud))
         .add_systems(PostUpdate, npc::spawn_npc_event_system)
         .run();
 }
