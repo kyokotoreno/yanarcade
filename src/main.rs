@@ -23,7 +23,7 @@ fn setup(
         ImageScaleMode::Tiled {
             tile_x: true,
             tile_y: true,
-            stretch_value: 100.0
+            stretch_value: 0.5
         }
     ));
 

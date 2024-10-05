@@ -14,3 +14,10 @@ rustflags = ["-C", "link-arg=-fuse-ld=lld",
     # (Nightly) Make the current crate share its generic instantiations
     "-Zshare-generics=y",
 ]
+
+# for Windows
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+    # (Nightly) Make the current crate share its generic instantiations
+    "-Zshare-generics=y"
+]
